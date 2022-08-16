@@ -1,14 +1,39 @@
 let canvas = <HTMLCanvasElement> document.getElementById('room');
 let ctx = canvas.getContext("2d");
-let x = 265;
-let y = 260;
-let yreverse = 0
-let lon = 20;
-let lar = 30;
-let pos = "N";
+let homeSize = 550 // Permet de modifier la taille de la maison (taille totale de la grille).
+let roomSize = 50 // Permet de modifier la taille de la pièce (taille d'un carré de la grille).
+let x = 265; // position x de l'aspirateur
+let y = 260; // position y de l'aspirateur
+let yreverse = 0 // permet de modifer la valeur y lorsque l'aspirateur dit son emplacement pour être dans le bon sens
+let lon = 20; // longueur de l'aspirateur
+let lar = 30; // largeur de l'aspirateur
+let pos = "N"; // orientation de l'aspirateur
 let text: HTMLElement = document.getElementById('text') as HTMLElement;
 
+const gridPatterns = () => {
+    //Permet de dessiner la grille 
+    ctx?.clearRect(0, 0, homeSize, homeSize);
+    for(let i=roomSize; i<=homeSize; i=i+roomSize ) {
+        ctx?.moveTo(i,roomSize);
+        ctx?.lineTo(i,homeSize);
+    
+        ctx?.moveTo(roomSize,i);
+        ctx?.lineTo(homeSize,i);
+    
+        ctx?.strokeStyle
+        ctx?.stroke()
+    }
+}
+
+const update = () => {
+    // Permet l'affichage de l'aspirateur et de créer les animations de mouvement de l'aspirateur.
+    gridPatterns();
+    ctx?.fillRect(x, y, lon, lar);
+    setTimeout(update, 500);
+}
+
 const G = () => {
+    // Permet de changer l'orientation de l'aspirateur vers la gauche. (exemple si l'aspirateur est au nord il sera alors orienté vers l'ouest).
     switch(pos) {
         case "N":
             pos = "W"
@@ -37,6 +62,7 @@ const G = () => {
 }
 
 const D = () => {
+    // Permet de changer l'orientation de l'aspirateur vers la droite. (exemple si l'aspirateur est au nord il sera alors orienté vers l'est).
     switch(pos) {
         case "N":
             pos = "E"
@@ -65,6 +91,7 @@ const D = () => {
 }
 
 const A = () => {
+    // Permet de faire avancer d'une case l'aspirateur en fonction de son orientation (si l'aspirateur est orienté vers le nord il avancera d'une case vers le nord)
     switch(pos) {
         case "N":
             y -= 50
@@ -84,28 +111,8 @@ const A = () => {
 
 }
 
-const clearScreen = () => {
-    ctx?.clearRect(0, 0, 500, 500);
-    for(let i=50; i<=550; i=i+50 ) {
-        ctx?.moveTo(i,50);
-        ctx?.lineTo(i,550);
-    
-        ctx?.moveTo(50,i);
-        ctx?.lineTo(550,i);
-    
-        ctx?.strokeStyle
-        ctx?.stroke()
-    }
-}
-
-const update = () => {
-    clearScreen();
-    ctx?.fillRect(x, y, lon, lar);
-    setTimeout(update, 500);
-}
-update()
-
 const reverse = () => {
+    // Prend la variable y et incrémente la variable yreverse avec la valeur attendu (lorsque sur y je suis en 4 je veux afficher 6 dans yreverse car l'axe y est dans l'autre sens que celui attendu)
     switch(Math.floor(y/50)) {
         case 1:
          yreverse = 9
@@ -141,12 +148,19 @@ const reverse = () => {
             y
         }
     }
+    const refreshText = () => {
+        // permet d'afficher en temps réel l'emplacement de l'aspirateur
+        text.innerHTML = `Je me trouve en x=${Math.floor(x/50)} et en y=${yreverse} mon orientation est ${pos}`
+    } 
+    setInterval(refreshText, 100)
     
     const sayWhereIAm = () => {
+        // Fait en sorte que l'aspirateur fasse un console.log de son emplacement
         console.log(`Je me trouve en x=${Math.floor(x/50)} et en y=${yreverse} mon orientation est ${pos}`)
     }
-     
-const programm = () => {
+    
+    const program = () => {
+        //Permet de créer le programme de l'aspirateur en lancent une suite de fonction qui seront effectuer chaque seconde.
     setTimeout(D,  1000);
     setInterval(reverse, 100)
     setTimeout(A, 2000);
@@ -160,11 +174,9 @@ const programm = () => {
     setTimeout(sayWhereIAm, 9200);
 }
 
-programm()
-const refreshText = () => {
-    text.innerHTML = `Je me trouve en x=${Math.floor(x/50)} et en y=${yreverse} mon orientation est ${pos}`
-} 
-setInterval(refreshText, 100)
+update()
+program()
+
 
 
     

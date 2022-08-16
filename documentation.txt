@@ -1,0 +1,25 @@
+Variable homeSize : Permet de modifier la taille de la maison (taille totale de la grille).
+Variable roomSize : Permet de modifier la taille de la pièce (taille d'un carré de la grille).
+Variable x et y : position sur l'axe x et l'axe y de l'aspirateur.
+Variable lon et lar : longeur et largeur de l'aspirateur.
+Var pos : permet d'indiquer l'orientation (N, E, W, S) de l'aspirateur.
+var yreverse : permet de modifer la valeur y lorsque l'aspirateur dit son emplacement pour être dans le bon sens
+
+fonction "gridPatterns" : Permet de dessiner la grille 
+
+fonction "update" : Permet l'affichage de l'aspirateur et de créer les animations de mouvement de l'aspirateur.
+
+fonction "G" : Permet de changer l'orientation de l'aspirateur vers la gauche. (exemple si l'aspirateur est au nord il sera alors orienté vers l'ouest).
+
+fonction "D" : Permet de changer l'orientation de l'aspirateur vers la droite. (exemple si l'aspirateur est au nord il sera alors orienté vers l'est).
+
+fonction "A" : Permet de faire avancer d'une case l'aspirateur en fonction de son orientation (si l'aspirateur est orienté vers le nord il avancera d'une case vers le nord).
+
+fonction "reverse" : Prend la variable y et incrémente la variable yreverse avec la valeur attendu (lorsque sur y je suis en 4 je veux afficher 6 dans yreverse car l'axe y est dans l'autre sens que celui attendu)
+
+fonction "refreshText": Permet d'afficher en temps réel l'emplacement de l'aspirateur.
+
+fonction "sayWhereIAm": Fait en sorte que l'aspirateur fasse un console.log de son emplacement.
+
+fonction "Program": Permet de créer le programme de l'aspirateur en lancent une suite de fonction qui seront effectuer chaque seconde.
+

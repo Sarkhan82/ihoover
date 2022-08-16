@@ -1,13 +1,34 @@
 var canvas = document.getElementById('room');
 var ctx = canvas.getContext("2d");
-var x = 265;
-var y = 260;
-var yreverse = 0;
-var lon = 20;
-var lar = 30;
-var pos = "N";
+var homeSize = 550; // Permet de modifier la taille de la maison (taille totale de la grille).
+var roomSize = 50; // Permet de modifier la taille de la pièce (taille d'un carré de la grille).
+var x = 265; // position x de l'aspirateur
+var y = 260; // position y de l'aspirateur
+var yreverse = 0; // permet de modifer la valeur y lorsque l'aspirateur dit son emplacement pour être dans le bon sens
+var lon = 20; // longueur de l'aspirateur
+var lar = 30; // largeur de l'aspirateur
+var pos = "N"; // orientation de l'aspirateur
 var text = document.getElementById('text');
+var gridPatterns = function () {
+    //Permet de dessiner la grille 
+    ctx === null || ctx === void 0 ? void 0 : ctx.clearRect(0, 0, homeSize, homeSize);
+    for (var i = roomSize; i <= homeSize; i = i + roomSize) {
+        ctx === null || ctx === void 0 ? void 0 : ctx.moveTo(i, roomSize);
+        ctx === null || ctx === void 0 ? void 0 : ctx.lineTo(i, homeSize);
+        ctx === null || ctx === void 0 ? void 0 : ctx.moveTo(roomSize, i);
+        ctx === null || ctx === void 0 ? void 0 : ctx.lineTo(homeSize, i);
+        ctx === null || ctx === void 0 ? void 0 : ctx.strokeStyle;
+        ctx === null || ctx === void 0 ? void 0 : ctx.stroke();
+    }
+};
+var update = function () {
+    // Permet l'affichage de l'aspirateur et de créer les animations de mouvement de l'aspirateur.
+    gridPatterns();
+    ctx === null || ctx === void 0 ? void 0 : ctx.fillRect(x, y, lon, lar);
+    setTimeout(update, 500);
+};
 var G = function () {
+    // Permet de changer l'orientation de l'aspirateur vers la gauche. (exemple si l'aspirateur est au nord il sera alors orienté vers l'ouest).
     switch (pos) {
         case "N":
             pos = "W";
@@ -34,6 +55,7 @@ var G = function () {
     }
 };
 var D = function () {
+    // Permet de changer l'orientation de l'aspirateur vers la droite. (exemple si l'aspirateur est au nord il sera alors orienté vers l'est).
     switch (pos) {
         case "N":
             pos = "E";
@@ -60,6 +82,7 @@ var D = function () {
     }
 };
 var A = function () {
+    // Permet de faire avancer d'une case l'aspirateur en fonction de son orientation (si l'aspirateur est orienté vers le nord il avancera d'une case vers le nord)
     switch (pos) {
         case "N":
             y -= 50;
@@ -77,24 +100,8 @@ var A = function () {
             console.log("Problème de commande");
     }
 };
-var clearScreen = function () {
-    ctx === null || ctx === void 0 ? void 0 : ctx.clearRect(0, 0, 500, 500);
-    for (var i = 50; i <= 550; i = i + 50) {
-        ctx === null || ctx === void 0 ? void 0 : ctx.moveTo(i, 50);
-        ctx === null || ctx === void 0 ? void 0 : ctx.lineTo(i, 550);
-        ctx === null || ctx === void 0 ? void 0 : ctx.moveTo(50, i);
-        ctx === null || ctx === void 0 ? void 0 : ctx.lineTo(550, i);
-        ctx === null || ctx === void 0 ? void 0 : ctx.strokeStyle;
-        ctx === null || ctx === void 0 ? void 0 : ctx.stroke();
-    }
-};
-var update = function () {
-    clearScreen();
-    ctx === null || ctx === void 0 ? void 0 : ctx.fillRect(x, y, lon, lar);
-    setTimeout(update, 500);
-};
-update();
 var reverse = function () {
+    // Prend la variable y et incrémente la variable yreverse avec la valeur attendu (lorsque sur y je suis en 4 je veux afficher 6 dans yreverse car l'axe y est dans l'autre sens que celui attendu)
     switch (Math.floor(y / 50)) {
         case 1:
             yreverse = 9;
@@ -130,10 +137,17 @@ var reverse = function () {
             y;
     }
 };
+var refreshText = function () {
+    // permet d'afficher en temps réel l'emplacement de l'aspirateur
+    text.innerHTML = "Je me trouve en x=".concat(Math.floor(x / 50), " et en y=").concat(yreverse, " mon orientation est ").concat(pos);
+};
+setInterval(refreshText, 100);
 var sayWhereIAm = function () {
+    // Fait en sorte que l'aspirateur fasse un console.log de son emplacement
     console.log("Je me trouve en x=".concat(Math.floor(x / 50), " et en y=").concat(yreverse, " mon orientation est ").concat(pos));
 };
-var programm = function () {
+var program = function () {
+    //Permet de créer le programme de l'aspirateur en lancent une suite de fonction qui seront effectuer chaque seconde.
     setTimeout(D, 1000);
     setInterval(reverse, 100);
     setTimeout(A, 2000);
@@ -146,8 +160,5 @@ var programm = function () {
     setTimeout(A, 9000);
     setTimeout(sayWhereIAm, 9200);
 };
-programm();
-var refreshText = function () {
-    text.innerHTML = "Je me trouve en x=".concat(Math.floor(x / 50), " et en y=").concat(yreverse, " mon orientation est ").concat(pos);
-};
-setInterval(refreshText, 100);
+update();
+program();
